@@ -76,7 +76,7 @@ def vote():
 @main.route("/get-vote",methods=['POST'])
 def get_vote():
     try:
-        #lmaooo
+        #Test
         global index_add_counter # means: in this scope, use the global name
         pusher_client.trigger('chatchannel', 'update-count', {'count':index_add_counter})
         return jsonify({'result' : 'success'})
