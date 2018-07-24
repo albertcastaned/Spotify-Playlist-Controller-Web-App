@@ -13,8 +13,8 @@
 </div>
 
 <div id="playlist" class="playlist-content">
+  <h3 style="margin-top:20px;" id="device_playing"></h3>
   <h1 style="margin-top:20px;">Current playlist:</h1>
-
 </div>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-bottom">
@@ -60,24 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 }, false);
-
-function skip(){
-  var access_token = "{{token}}";
-  var url = 'https://api.spotify.com/v1/me/player/next';
-  $.ajax(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + access_token,
-      'Content-Type': 'application/json'
-    },
-    success: function(r) {
-      console.log("Song skipped");
-    },
-    error: function(r) {
-      console.log('error');
-    }
-  });
-}
 
 
 $(function()
@@ -204,7 +186,8 @@ function updatePlaylist() {
 
 var link_playlist = 'https://api.spotify.com/v1/users/12158815080/playlists/1B20Su8DGkJY7uuFGWUfck/tracks';
 var link_playing = 'https://api.spotify.com/v1/me/player/currently-playing';
-
+var link_name = '	https://api.spotify.com/v1/me';
+var link_device = '	https://api.spotify.com/v1/me/player';
 
 
 $.ajax(link_playlist, {
@@ -288,6 +271,8 @@ $.ajax(link_playing,
       var restString = rest + "%";
       playing.className = "playing";
       rainbow();
+      show_play_location();
+
         if((playing!=temp_play) && (flag==true))
         {
           localStorage['voted'] = '';
@@ -318,7 +303,52 @@ $.ajax(link_playing,
 
 
 });
+
+function show_play_location()
+{
+var string = "Currently playing on: ";
+$.ajax(link_name,
+  {
+  method: 'GET',
+  async: false,
+  headers: {
+    'Authorization': 'Bearer ' + access_token,
+    'Content-Type': 'application/json'
+  },
+  success: function(r)
+  {
+    string = string + r.display_name + "'s ";
+  },
+  error: function(r) {
+    console.log('error');
+  }
+
+
+});
+$.ajax(link_device,
+  {
+  method: 'GET',
+  async: false,
+  headers: {
+    'Authorization': 'Bearer ' + access_token,
+    'Content-Type': 'application/json'
+  },
+  success: function(r)
+  {
+    string = string + r.device.type;
+  },
+  error: function(r) {
+    console.log('error');
+  }
+
+
+});
+$("#device_playing").html(string);
+
 }
+
+}
+
 function vote()
 {
 if(localStorage['voted'] == 'true') {
@@ -347,7 +377,6 @@ function rainbow()
     }
 }
 
-updatePlaylist();
 setInterval(updatePlaylist, 5000);
 setInterval	(rainbow, 100);
 

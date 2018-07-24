@@ -286,6 +286,12 @@ right: 20px;
 top: 25px;
 }
 
+.fixed-bottom
+{
+  background-color: #111;
+  opacity: 0.95;
+}
+
 .btn-circle.btn-lg {
   width: 60px;
   height: 60px;
